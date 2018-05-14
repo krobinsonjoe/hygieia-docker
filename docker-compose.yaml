@@ -1,0 +1,65 @@
+# BUILD/RUN COMMAND : docker-compose rm -f & docker-compose up --build
+# SHELL COMMAND (root) : docker exec -u root -ti <stack> bash
+
+version: '3'
+services:
+      
+  hygieia-ui:
+    image: "capitalone/hygieia-ui:latest"
+    ports:
+      - "8088:80"
+    container_name: hygieia-ui
+    deploy: 
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    depends_on: 
+      - hygieia-api
+
+  hygieia-api:
+    image: "capitalone/hygieia-api:latest"
+    ports:
+      - "8080:8080"
+    container_name: hygieia-api
+    deploy: 
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: dashboarddb
+      SPRING_DATA_MONGODB_USERNAME: dashboarduser
+      SPRING_DATA_MONGODB_PASSWORD: dbpassword
+    volumes:
+      - C:\Users\sguclu\Desktop\Hygieia\volumes\api\logs:/hygieia/logs
+    depends_on: 
+      - hygieia-mongodb      
+ 
+  hygieia-mongodb:
+    image: "mongo:latest"
+    ports:
+      - "27017:27017"
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: dashboarduser
+      MONGO_INITDB_ROOT_PASSWORD: dbpassword
+      MONGO_INITDB_ROOT_DATABASE: dashboarddb
+    deploy: 
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    command: --smallfiles
+    #NOT WORKING ON WINDOWS/MAC WTF???
+    #volumes:
+    #  - C:\Users\sguclu\Desktop\Hygieia\volumes\mongodb\:/data/db
+ 

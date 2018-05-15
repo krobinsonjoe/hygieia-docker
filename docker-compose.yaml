@@ -36,21 +36,23 @@ services:
       SPRING_DATA_MONGODB_PORT: 27017
       SPRING_DATA_MONGODB_DATABASE: dashboarddb
       SPRING_DATA_MONGODB_USERNAME: dashboarduser
-      SPRING_DATA_MONGODB_PASSWORD: dbpassword
+      SPRING_DATA_MONGODB_PASSWORD: password
     volumes:
       - C:\Users\sguclu\Desktop\Hygieia\volumes\api\logs:/hygieia/logs
     depends_on: 
       - hygieia-mongodb      
  
   hygieia-mongodb:
-    image: "mongo:latest"
+    build:
+      context: .
+      dockerfile: hygieia-mongodb.dockerfile
     ports:
       - "27017:27017"
     container_name: mongodb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: dashboarduser
+      MONGO_INITDB_ROOT_USERNAME: dbuser
       MONGO_INITDB_ROOT_PASSWORD: dbpassword
-      MONGO_INITDB_ROOT_DATABASE: dashboarddb
+      MONGO_INITDB_DATABASE: dashboarddb
     deploy: 
       replicas: 1
       update_config:

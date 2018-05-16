@@ -7,16 +7,24 @@ services:
   hygieia-ui:
     image: "capitalone/hygieia-ui:latest"
     ports:
-      - "8088:80"
+      - "8088:80"   
     container_name: hygieia-ui
-    deploy: 
-      replicas: 1
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
+    environment:
+      API_HOST: hygieia-api
+      API_PORT: 8080
     depends_on: 
+      - hygieia-api
+
+  hygieia-github:
+   image: "capitalone/hygieia-github-scm-collector:latest"
+   container_name: hygieia-github 
+   environment: 
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: dashboarddb
+      SPRING_DATA_MONGODB_USERNAME: dashboarduser
+      SPRING_DATA_MONGODB_PASSWORD: password
+   depends_on: 
       - hygieia-api
 
   hygieia-api:
@@ -24,13 +32,6 @@ services:
     ports:
       - "8080:8080"
     container_name: hygieia-api
-    deploy: 
-      replicas: 1
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
     environment:
       SPRING_DATA_MONGODB_HOST: mongodb
       SPRING_DATA_MONGODB_PORT: 27017
@@ -49,17 +50,6 @@ services:
     ports:
       - "27017:27017"
     container_name: mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: dbuser
-      MONGO_INITDB_ROOT_PASSWORD: dbpassword
-      MONGO_INITDB_DATABASE: dashboarddb
-    deploy: 
-      replicas: 1
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
     command: --smallfiles
     #NOT WORKING ON WINDOWS/MAC WTF???
     #volumes:

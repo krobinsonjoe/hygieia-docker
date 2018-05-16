@@ -9,22 +9,18 @@ services:
     ports:
       - "8088:80"   
     container_name: hygieia-ui
-    environment:
-      API_HOST: hygieia-api
-      API_PORT: 8080
     depends_on: 
       - hygieia-api
 
   hygieia-github:
-   image: "capitalone/hygieia-github-scm-collector:latest"
-   container_name: hygieia-github 
-   environment: 
-      SPRING_DATA_MONGODB_HOST: mongodb
-      SPRING_DATA_MONGODB_PORT: 27017
-      SPRING_DATA_MONGODB_DATABASE: dashboarddb
-      SPRING_DATA_MONGODB_USERNAME: dashboarduser
-      SPRING_DATA_MONGODB_PASSWORD: password
-   depends_on: 
+    build:
+      context: .
+      dockerfile: hygieia-github.dockerfile  
+    container_name: hygieia-github 
+    environment:
+      #MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+    depends_on: 
       - hygieia-api
 
   hygieia-api:

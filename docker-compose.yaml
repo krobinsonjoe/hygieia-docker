@@ -18,7 +18,7 @@ services:
       dockerfile: hygieia-github.dockerfile  
     container_name: hygieia-github 
     environment:
-      #MONGO_HOST: mongodb
+      MONGO_HOST: mongodb
       MONGO_PORT: 27017
     depends_on: 
       - hygieia-api
@@ -35,7 +35,7 @@ services:
       SPRING_DATA_MONGODB_USERNAME: dashboarduser
       SPRING_DATA_MONGODB_PASSWORD: password
     volumes:
-      - C:\Users\sguclu\Desktop\Hygieia\volumes\api\logs:/hygieia/logs
+      - /lab/logs:/hygieia/logs
     depends_on: 
       - hygieia-mongodb      
  
@@ -49,5 +49,5 @@ services:
     command: --smallfiles
     #NOT WORKING ON WINDOWS/MAC WTF???
     #volumes:
-    #  - C:\Users\sguclu\Desktop\Hygieia\volumes\mongodb\:/data/db
+    #  - /lab:/data/db
  

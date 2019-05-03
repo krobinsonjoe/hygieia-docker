@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: hygieia-github
+  name: hygieia-github
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: hygieia-github
+    spec:
+      containers:
+      - env:
+        - name: MONGO_HOST
+          value: mongodb
+        - name: MONGO_PORT
+          value: "27017"
+        image: hygieia-github
+        name: hygieia-github
+        resources: {}
+      restartPolicy: Always
+status: {}
